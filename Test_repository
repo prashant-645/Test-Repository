@@ -1,0 +1,37 @@
+public function _sendMail()
+    {
+         $customerName = "Prashant Sharma";
+         $customerEmail = "prashantsharma@cedcoss.com";
+        $emailTemplate = Mage::getModel('core/email_template')->loadDefault('custom2');
+       /* echo "<pre>";
+        print_r($emailTemplate);*/
+        //echo "******************";
+        $senderName = Mage::getStoreConfig('trans_email/ident_general/name');
+        $senderEmail = Mage::getStoreConfig('trans_email/ident_general/email');
+        $emailTemplateVariables = array();
+        $emailTemplateVariables['name'] = $customerName;
+        $emailTemplateVariables['email'] = $customerEmail;
+        $processedTemplate = $emailTemplate->getProcessedTemplate($emailTemplateVariables);
+        print_r($processedTemplate);
+        echo "******************";
+        $mail = Mage::getModel('core/email')
+            ->setToName($senderName)
+            ->setToEmail($customerEmail)
+            ->setBody($processedTemplate)
+            ->setSubject('Subject :')
+            ->setFromEmail($senderEmail)
+            ->setFromName($senderName)
+            ->setType('html');
+        try {
+            echo "<pre>";
+            print_r($mail);
+            die("aaa");
+            //Confimation E-Mail Send
+            $mail->send();
+        } catch (Exception $error) {
+            Mage::getSingleton('core/session')->addError($error->getMessage());
+           echo $error;
+             die("catch");
+            return false;
+        }
+    }
